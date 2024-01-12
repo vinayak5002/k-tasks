@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k-tasks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k-tasks
+  template:
+    metadata:
+      labels:
+        app: k-tasks
+    spec:
+      containers:
+        - name: app
+          image: vinayak5002/k-tasks:1.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongo:27017/dev
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k-tasks
+spec:
+  selector:
+    app: k-tasks
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
